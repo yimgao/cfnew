@@ -1,0 +1,46 @@
+name: Deploy v3 Worker
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'v3/worker/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: v3/worker
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: v3/worker/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      # PROXY_UUID / ADMIN_TOKEN / SUB_TOKEN 是通过 `wrangler secret put` 手动管理的机密，
+      # 不在此工作流中设置，避免把它们额外暴露给 CI。
+      - name: Deploy to Cloudflare Workers
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: v3/worker
+          command: deploy

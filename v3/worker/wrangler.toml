@@ -1,0 +1,14 @@
+name = "cfnew-v3-worker"
+main = "src/index.ts"
+compatibility_date = "2026-01-20"
+compatibility_flags = ["nodejs_compat"]
+
+# PROXY_UUID, ADMIN_TOKEN, SUB_TOKEN are secrets, not vars — never commit them.
+# Local dev: set them in .dev.vars (gitignored).
+# Production: `wrangler secret put <NAME>`
+
+[[kv_namespaces]]
+binding = "CONFIG_KV"
+# Replace with a real namespace id before deploying:
+# `wrangler kv namespace create CONFIG_KV`
+id = "local_dev_placeholder"
