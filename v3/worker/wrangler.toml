@@ -9,6 +9,4 @@ compatibility_flags = ["nodejs_compat"]
 
 [[kv_namespaces]]
 binding = "CONFIG_KV"
-# Replace with a real namespace id before deploying:
-# `wrangler kv namespace create CONFIG_KV`
-id = "local_dev_placeholder"
+id = "676862322c524a12bfe3b0a11f9db743"
